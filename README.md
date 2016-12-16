@@ -10,6 +10,6 @@ This is a nice simple tool to get your existing known ssh connections from all y
 Pretty straight forward:
  - "-v" Verbose: (not currently in use) for those that like interaction/logging
  - "-H" Header: Print headers on the CSV
- - "-o" Output Dir: Select where to dump the generated files, default is "." (current dir)
+ - "-o" Output Dir: Select where to dump the generated files, default is "/tmp" (safe on most systems)
 
 A useful way to implement the -o is to write to an autofs volume (usually "/net/$hostname" if enabled) so you can gather all your output files in one location for concatination. I've written the output specifically for this intended use.

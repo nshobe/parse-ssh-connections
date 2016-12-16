@@ -10,7 +10,7 @@
 
 usage() { echo "Usage: $0 [-v verbose] [-H Print Headers] [-o Output Directory(required)]" 1>&2; exit 1; }
 HOSTNAME=`hostname`
-OUTDIR="."
+OUTDIR="/tmp"
 while getopts "vHo:" OPTION; do
   case "$OPTION" in
     v) VERBOSE=1      ;;
