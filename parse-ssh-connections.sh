@@ -9,7 +9,7 @@
 # shows the ID field of ssh keys that can connect to the host.
 
 usage() { echo "Usage: $0 [-v verbose] [-H Print Headers] [-o Output Directory(required)]" 1>&2; exit 1; }
-hostname=`hostname`
+HOSTNAME=`hostname`
 OUTDIR="."
 while getopts "vHo:" OPTION; do
   case "$OPTION" in
@@ -20,13 +20,13 @@ while getopts "vHo:" OPTION; do
     esac
 done
 # clean the previous runs, comment out if using above headers
-> $OUTDIR/outbound.csv
-> $OUTDIR/inbound.csv
-> $OUTDIR/homemap.csv
+> $OUTDIR/$HOSTNAME.outbound.csv
+> $OUTDIR/$HOSTNAME.inbound.csv
+> $OUTDIR/$HOSTNAME.homemap.csv
 header() {
-  echo "On Host,User,Connects To" >  $OUTDIR/outbound.csv
-  echo "On Host,User,Accepts From" > $OUTDIR/inbound.csv
-  echo "User,Home Directory" >       $OUTDIR/homemap.csv
+  echo "On Host,User,Connects To" >  $OUTDIR/$HOSTNAME.outbound.csv
+  echo "On Host,User,Accepts From" > $OUTDIR/$HOSTNAME.inbound.csv
+  echo "User,Home Directory" >       $OUTDIR/$HOSTNAME,homemap.csv
 }
 
 # $i points to lines in /etc/passwd bellow
@@ -34,7 +34,7 @@ while read i
 do
   user=`echo $i | awk -F":" '{print $1}'`
   home=`echo $i | awk -F":" '{print $6}'`
-  echo "$user,$home" >> $OUTDIR/homemap.csv
+  echo "$user,$home" >> $OUTDIR/$HOSTNAME.homemap.csv
   # Verify the file exists to prevent errors
   if [ -a "$home/.ssh/known_hosts" ]
   then
@@ -44,7 +44,7 @@ do
       # Prevents empty or header lines from being output
       if [ -n "$host" ]
       then
-        echo "$hostname,$user,$host" >> $OUTDIR/outbound.csv
+        echo "$HOSTNAME,$user,$host" >> $OUTDIR/$HOSTNAME.outbound.csv
       fi
     done < $home/.ssh/known_hosts
   fi
@@ -57,7 +57,7 @@ do
       # Prevents empty or header lines from being output
       if [ -n "$host" ]
       then
-        echo "$hostname,$user,$host" >> $OUTDIR/inbound.csv
+        echo "$HOSTNAME,$user,$host" >> $OUTDIR/$HOSTNAME.inbound.csv
       fi
     done < $home/.ssh/authorized_keys
   fi
