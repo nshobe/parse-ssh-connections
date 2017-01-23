@@ -2,11 +2,17 @@
 #
 ### SSH Connection Mapper
 #
-# This Script is desing to generate csv files that help you map
+# This Script is desinged to generate csv files that help you map
 # ssh connections for all users on a given host. The resulting
 # outbound.csv shows accepted known hosts and thus outbound ssh
 # connections from the host the script is run on, while inbound.csv
-# shows the ID field of ssh keys that can connect to the host.
+# shows the ID field of ssh keys that can connect to the host. There's
+# also a home map generated so you have a clue where these keys map to.
+#
+# This must be run as root, and the resulting files may contain sensitive
+# information. It's up to you to manage the ouput safety of these files.
+# If you run this with sudo, the output files will be owned be your user,
+# not root. Be mindful of who has access to your user! You've been warned.
 
 usage() { echo "Usage: $0 [-v verbose] [-H Print Headers] [-o Output Directory(required)]" 1>&2; exit 1; }
 HOSTNAME=`hostname`
@@ -62,3 +68,7 @@ do
     done < $home/.ssh/authorized_keys
   fi
 done < /etc/passwd
+# Ensure file mode of output files
+chmod 600 $OUTDIR/$HOSTNAME.outbound.csv
+chmod 600 $OUTDIR/$HOSTNAME.inbound.csv
+chmod 600 $OUTDIR/$HOSTNAME.homemap.csv
